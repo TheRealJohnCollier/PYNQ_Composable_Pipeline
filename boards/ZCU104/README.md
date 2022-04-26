@@ -1,4 +1,9 @@
-# Composable Pipeline PYNQ-ZU
+# Composable Pipeline ZCU-104
+
+Notes:  There is no MIPI interface on this board so it is removed.
+Notes:  Assumptions were made about resolutions being 1920x1080 but there are mode commands you can run to set it to 1920x1200
+
+
 
 ## Rebuild overlay
 
