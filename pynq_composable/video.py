@@ -100,7 +100,7 @@ class PLPLVideo:
         self._hdmi_out = ol.video.hdmi_out
         self._source = source
         self._started = None
-
+        print("device.name = ",ol.device.name)
         if ol.device.name == 'Pynq-ZU':
             # Deassert HDMI clock reset
             ol.hdmi_tx_control.channel2[0].write(1)
@@ -123,8 +123,34 @@ class PLPLVideo:
             self._hdmi_out.frontend.clocks = [dp159, si]
             if (ol.hdmi_tx_control.read(0)) == 0:
                 ol.hdmi_tx_control.write(0, 1)
+        elif: ol.device.name == 'zcu104':
+            print("xilinx pynq_composable/video.py: setting device = zcu104")
+            # Deassert HDMI clock reset
+            ol.hdmi_tx_control.channel2[0].write(1)
+            # Wait 200 ms for the clock to come out of reset
+            sleep(0.2)
+
+            ol.video.phy.vid_phy_controller.initialize()
+
+            if self._source == VSource.HDMI:
+                self._source_in = ol.video.hdmi_in
+                self._source_in.frontend.set_phy(
+                    ol.video.phy.vid_phy_controller)
+            else:
+                self._source_in = ol.mipi
+                print("Setting source to mipi")
+
+            self._hdmi_out.frontend.set_phy(ol.video.phy.vid_phy_controller)
+
+            dp159 = DP159(ol.HDMI_CTL_axi_iic, 0x5C)
+            idt = IDT_8T49N24(ol.HDMI_CTL_axi_iic, 0x6c)
+            self._hdmi_out.frontend.clocks = [dp159, idt]
+            if (ol.hdmi_tx_control.read(0)) == 0:
+                ol.hdmi_tx_control.write(0, 1)
+
         else:
             self._source_in = ol.video.hdmi_in
+            print("Setting source_in to video.hdmi_in");
 
     def start(self):
         """Configure and start the Video source
