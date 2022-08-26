@@ -123,7 +123,7 @@ class PLPLVideo:
             self._hdmi_out.frontend.clocks = [dp159, si]
             if (ol.hdmi_tx_control.read(0)) == 0:
                 ol.hdmi_tx_control.write(0, 1)
-        elif ol.device.name == 'zcu104':
+        elif ol.device.name == 'ZCU104':
             print("xilinx pynq_composable/video.py: setting device = zcu104")
             # Deassert HDMI clock reset
             ol.hdmi_tx_control.channel2[0].write(1)
